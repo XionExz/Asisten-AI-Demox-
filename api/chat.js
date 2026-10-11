@@ -17,7 +17,7 @@ export default async function handler(req, res) {
   try {
     const { message } = req.body || {};
 
-    if (!message || typeof message !== "string") {
+    if (typeof message !== "string" || !message.trim()) {
       return res.status(400).json({
         error: "Pesan tidak boleh kosong."
       });
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           model: "gpt-4.1-mini",
           instructions:
-            "Kamu adalah Demox AI, asisten AI yang ramah, cerdas, dan membantu. Jawab dalam bahasa yang digunakan pengguna.",
+            "Kamu adalah Demox AI, asisten yang ramah dan membantu. Jawab dalam bahasa pengguna.",
           input: message
         })
       }
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     if (!response.ok) {
       console.error("OpenAI API error:", data);
       return res.status(502).json({
-        error: "OpenAI gagal memproses permintaan. Periksa API dan billing."
+        error: "Permintaan AI gagal. Periksa API dan billing."
       });
     }
 
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
       reply: reply || "Belum ada jawaban dari AI."
     });
   } catch (error) {
-    console.error(error);
+    console.error("Server error:", error);
     return res.status(500).json({
       error: "Terjadi kesalahan pada server."
     });
